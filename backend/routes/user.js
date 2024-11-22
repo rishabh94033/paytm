@@ -1,6 +1,6 @@
 const express=require("express");
-const { User } = require("../db");
-const userRouter=express.router()
+const { User, Account } = require("../db");
+const userRouter=express.Router()
 const jwt=require("jsonwebtoken");
 const jwtSecret = require("../config");
 const z = require("zod");
@@ -30,11 +30,11 @@ userRouter.post("/signup" ,async(req,res)=>{
             message:"invalid format"
         })
     }
-    const user= User.findOne({
-        username:username
+    const user= await User.findOne({
+        username:req.body.username
     })
     if(user){
-        res.status(404).json({
+        return res.status(404).json({
             message:"User exist"
         })
     }
@@ -43,10 +43,17 @@ userRouter.post("/signup" ,async(req,res)=>{
         username:username,
         firstName:firstName,
         lastname:lastname,
-        password:password
+        password:password,
     })
-    const token= jwt.sign(username,jwtSecret)
-    res.status(200).json({
+const userId=dbuser._id
+    await Account.create({
+        userId,
+        balance: 1 + Math.random() * 10000
+    })
+    const token= jwt.sign({
+        userId
+    },jwtSecret)
+    return res.status(200).json({
         message:"user successfully added",
         token:token
     })
@@ -80,8 +87,8 @@ const updteduserSchema = z.object({
 })
 userRouter.put("/", userauthMiddleware, async(req,res)=>{
     const newbody=req.body;
-    const res= updteduserSchema.safeParse(newbody)
-    if(!res){
+    const response= updteduserSchema.safeParse(newbody)
+    if(!response){
         res.status(403).json({
             message:"error ehile updatiing the information"
         })
@@ -98,7 +105,7 @@ userRouter.put("/", userauthMiddleware, async(req,res)=>{
 })
 
 
-router.get("/bulk", async (req, res) => {
+userRouter.get("/bulk", async (req, res) => {
     const filter = req.query.filter || "";
 
     const users = await User.find({
