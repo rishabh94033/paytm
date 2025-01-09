@@ -22,7 +22,7 @@ function userauthMiddleware(req, res, next) {
     // console.log(decoded);
     
     
-    if(req.body.userId==decoded.userId){
+    if(decoded){
       // console.log("inside if");
       
         return next()

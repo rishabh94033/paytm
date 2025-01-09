@@ -7,6 +7,6 @@ export function Balance({label}){
         <div className="font-semibold ml-4 text-lg">
             Rs 6900
         </div>
-    </div>)
-
+    </div>
+    )
 }

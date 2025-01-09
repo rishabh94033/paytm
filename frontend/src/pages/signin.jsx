@@ -1,9 +1,16 @@
+import { useState } from "react";
 import { Bottom } from "../components/bottombar";
+import { ButtonComponent } from "../components/buttoncomponent";
 import { HeadingComponent } from "../components/heading";
 import { Inputbar } from "../components/inputbar";
 import { Subheading } from "../components/sub-heading";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export function Signin(){
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const navigate=useNavigate();
 
     return(
         <div className="bg-slate-300 h-screen flex justify-center">
@@ -11,10 +18,30 @@ export function Signin(){
                 <div className="rounded-lg bg-white w-80 text-center p-2 h-max px-4">
             <HeadingComponent label={"Sign In"}/>
             <Subheading label={"Enter your credentails to access the account"}/>
-            <Inputbar label={"First Name"} type={"text"} />
-            <Inputbar label={"Email"} type={"text"}/>
-            <Inputbar label={"Password"} type={"password"}/>
-            <Bottom label1={"Don't have an account? "} label2={"Sign-Up"} to={"/signup"}/>
+            <Inputbar label={"Email"} type={"text"} onchange={e=>{
+                setUsername(e.target.value)
+            }}/>
+            <Inputbar label={"Password"} type={"password"} onchange={e=>{
+                setPassword(e.target.value)
+            }}/>
+            <ButtonComponent label={"Signin"} onClick={async()=>{
+                try{
+                    const res=await axios.post("http://localhost:3000/api/vi/user/signin",
+                        {
+                            "password":password,
+                            "username":username
+                        }
+                    )
+                    const token= res.data.token
+                    localStorage.setItem("token",token)
+                    navigate("/dashboard")
+                }catch(err){
+                    
+                    console.log("error while logging");
+                }
+                
+            }}/>
+            <Bottom label1={"Don't have an account? "} label2={"Sign-Up"} to={"/signup"} />
                 </div>
             </div>
         </div>

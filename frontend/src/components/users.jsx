@@ -1,4 +1,24 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
 export function Users(){
+    const [users,setusers]=useState([]);
+    useEffect(()=>{
+      
+        async function usersfetch() {
+            const data= await axios.get("http://localhost:3000/api/vi/user/bulk",{headers:{
+                //  "authorization":`Bearer ${localStorage.getItem("token")}`
+                "authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzgwMDJkYmE2NTUwYWQ3MDRiMDA2NWQiLCJpYXQiOjE3MzY0NDI1ODd9._K5x75qiMk0YK4TY1rcbjsHITwPS-zcaSzUX7VS938s"
+             }})
+             setusers(data.data.user)
+            
+             
+         }
+         usersfetch()
+    },[])
+    
+
+    
     return(
         <div>
         <div className="font-bold mt-6 text-lg">
@@ -7,9 +27,12 @@ export function Users(){
         <div className="my-2">
             <input type="text" placeholder="Search Users" className="w-full px-2 py-1 border rounded border-slate-200" />
         </div>
-        <User label={"U1"} label2={"User 1"}/>
-        <User label={"U2"} label2={"User 1"}/>
-        <User label={"U3"} label2={"User 1"}/>
+
+        {users.map((user)=>{
+           
+           
+           return <User label={user.firstName.substring(0,1)} label2={user.firstName}/>
+        })}
         </div>
      
     )
@@ -29,8 +52,8 @@ function User({label, label2}){
             </div>
 </div>
             <div className="flex flex-col justify-center h-ful" > 
-            <button class="w-full text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Send Money</button>
+            <Link to={"/sendmoney"}><button className="w-full text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Send Money</button></Link>
             </div>
-        </div>
+        </div>  
     )
 }

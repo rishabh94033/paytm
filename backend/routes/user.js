@@ -59,7 +59,7 @@ const userId=dbuser._id
     })
 })
 
-userRouter.post("/signin", userauthMiddleware, async(req,res)=>{
+userRouter.post("/signin", async(req,res)=>{
     const username= req.body.username;
     const password= req.body.password;
 
@@ -105,7 +105,7 @@ userRouter.put("/", userauthMiddleware, async(req,res)=>{
 })
 
 
-userRouter.get("/bulk", async (req, res) => {
+userRouter.get("/bulk", userauthMiddleware, async (req, res) => {
     const filter = req.query.filter || "";
 
     const users = await User.find({
@@ -130,7 +130,11 @@ userRouter.get("/bulk", async (req, res) => {
     })
 })
 
-
+userRouter.get("/check",(req,res)=>{
+    res.json({
+        msg:"healthy"
+    })
+})
 module.exports=userRouter;
 
 
