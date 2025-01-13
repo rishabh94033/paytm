@@ -33,7 +33,7 @@ export function Signin(){
                         }
                     )
                     const token= res.data.token
-                    localStorage.setItem("token",token)
+                    localStorage.setItem("PaytmLiteToken",token)
                     navigate("/dashboard")
                 }catch(err){
                     

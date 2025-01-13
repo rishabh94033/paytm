@@ -45,7 +45,7 @@ export function Signup(){
                     }
                 )
                 const token= res.data.token
-                localStorage.setItem("token",token)
+                localStorage.setItem("PaytmLiteToken",token)
                 navigate("/dashboard")
             }catch(err){
                 console.log("error while logging");
